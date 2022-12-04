@@ -1,4 +1,4 @@
-const scWidth  = 500;
+const scWidth  = 1000;
 const scHeight = 500;
 
 viewport.width  = scWidth;
@@ -6,6 +6,7 @@ viewport.height = scHeight;
 
 const ctx = viewport.getContext("2d");
 ctx.imageSmoothingEnabled = false;
+ctx.fillStyle = "#ffffff";
 
 const img = ctx.createImageData(scWidth,scHeight);
 const data = img.data;
@@ -35,11 +36,11 @@ const updatePixel = (x,y) => {
 
 	let force = 
 		getHeight(x+1,y) +
-		getHeight(x-1,y) +
+		getHeight(x-1,y);/* +
 		getHeight(x,y-1) +
-		getHeight(x,y+1);
+		getHeight(x,y+1);*/
 	
-	force /= 4;
+	force /= 2;
 
 	map[id].velocity += (force - map[id].height) / map[id].mass;
 }
@@ -65,7 +66,7 @@ const pixel = (x,y,r,g,b) => {
 	}
 }*/
 
-for (let x = 150; x < 160; x++) {
+/*for (let x = 150; x < 160; x++) {
 	for (let y = 0 ; y < scHeight; y++) {
 		//if (200 < y && y < 220) continue;
 		//if (280 < y && y < 300) continue;
@@ -75,7 +76,7 @@ for (let x = 150; x < 160; x++) {
 
 		map[id].mass = 100;
 	}
-}
+}*/
 
 
 /*for (let x = -20; x < 20; x++) {
@@ -95,12 +96,42 @@ for (let x = 150; x < 160; x++) {
 //map[250*scWidth+100].height = 100;
 
 
+for (let i = 0; i < 200; i++) {
+	map[i].mass = 0.5;
+}
+
+
 var frame = 0;
 
 const update = () => {
+	if (frame <= 100) {
+		map[500].height = Math.sin(frame/100*Math.PI) * 50;
+	}
+
+
+	ctx.clearRect(0,0,scWidth,scHeight);
+
+	for (let i = 0; i < scWidth; i++) {
+		let h = map[i].height;
+
+		map[i].height += map[i].velocity;
+
+		ctx.fillRect(i,h+scHeight/2,1,1/map[i].mass);
+	}
+
+	for (let i = 0; i < scWidth; i++) {
+		updatePixel(i,0);
+	}
+		
+	frame++;
+
+	requestAnimationFrame(update);
+
+	return;
+
 	/*if (frame <= 10) {
 		map[250*scWidth+250].height = Math.sin(frame/10*Math.PI) * 100;
-	}*/
+	}
 
 	if (frame < 10000) {
 		let h = Math.sin(frame/100*Math.PI*5);
@@ -134,7 +165,7 @@ const update = () => {
 
 	ctx.putImageData(img,0,0);
 	frame++;
-	requestAnimationFrame(update);
+	requestAnimationFrame(update);*/
 }
 
 update();
